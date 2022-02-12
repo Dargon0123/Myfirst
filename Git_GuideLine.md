@@ -76,13 +76,16 @@
    git branch
    # 查看当前仓库的分支，*master 意味着当前所在的分支
    
+   git branch -a
+   # 查看当前仓库中所有以及隐藏的分支
+   
    git branch a 
    # 新建分支a 
    
    git checkout -b b
    # 新建分支 b 并且切换到分支b 
    ```
-
+   
 7. ```shell
    git checkout [分支名]
    # git checkout a ; 切换到分支a
