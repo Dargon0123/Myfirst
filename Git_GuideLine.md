@@ -85,7 +85,7 @@
    git checkout -b b
    # 新建分支 b 并且切换到分支b 
    ```
-   
+
 7. ```shell
    git checkout [分支名]
    # git checkout a ; 切换到分支a
@@ -109,6 +109,13 @@
     # git tag v1.0 ; 给当前分支 add 标签名
     # 方便查找 git checkout v1.0 就相当于 git checkout [该分支]
     ```
+
+11. ```shell
+    gitk --all &
+    # 查看当前的仓库的关系
+    ```
+
+12. 
 
 ## 02 与远程仓库交互
 
@@ -147,7 +154,57 @@
    git push origin :[分支名]
    # 直接删除远程仓库中该分支
    ```
+
+## 03 合并`Github`上的两个分支
+
+1. 一般地，在本地进行`git clone`命令时候，默认是`clone`到的远程仓库的`master `分支，合并分支的时候就需要另一个分支，如何在当地拉取另一个分支的内容
+
+   ```shell
+   # 01 显示所有的branch
+   $ git branch -a
+   * master
+     remotes/origin/main
+     remotes/origin/master
    
+   # 02 目录切换到分支main的内容 
+   git checkout origin/main 
+   
+   $ git branch -a
+   * (HEAD detached at origin/main)
+     master
+     remotes/origin/main
+     remotes/origin/master
+   
+   # 03 查看成功切换到main 这里
+   git checkout main
+   $ git branch
+   * main
+     master
+     
+   $ git branch -a
+   * main
+     master
+     remotes/origin/main
+     remotes/origin/master
+   
+   
+   # 04 merge
+   # 先切换到 branch master
+   # occur error
+   $ git merge main
+   fatal: refusing to merge unrelated histories
+   # solve error
+   $ git merge main --allow-unrelated-histories
+   Merge made by the 'recursive' strategy.
+    hit.txt | 1 +
+    1 file changed, 1 insertion(+)
+    create mode 100644 hit.txt
+   # merge successful
+   
+   $ git push origin master
+   # push 到远程仓库
+   ```
+
    
 
 
