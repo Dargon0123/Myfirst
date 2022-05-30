@@ -4,14 +4,26 @@
 
 * 本地通过`ssh`与`github`尝试连接的时候，出现问题。
 
-* ```she
+* ```shell
   Could not resolve host: github.com
   
   or
   
   ssh: Could not resolve hostname github.com: Name or service not known
+  
+  or
+  
+  # 偶尔出现的网络问题，重新检查下自己是否可以登录到github，
+  # 检查自己的网络连接问题
+  $ git push origin master
+  Connection reset by 140.82.114.4 port 22
+  fatal: Could not read from remote repository.
+  
+  Please make sure you have the correct access rights
+  and the repository exists.
+  
   ```
-
+  
 * 尝试着修改DNS，未解决
 
 # 01 方法
