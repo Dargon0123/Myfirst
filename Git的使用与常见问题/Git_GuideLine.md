@@ -108,14 +108,17 @@
     git tag [标签名]
     # git tag v1.0 ; 给当前分支 add 标签名
     # 方便查找 git checkout v1.0 就相当于 git checkout [该分支]
+    # 详情参考 git 官方网站 [git tags 标签使用方式](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
     ```
-
+    
+11. [Git 基础 - 打标签](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
+    
 11. ```shell
     gitk --all &
     # 查看当前的仓库的关系
     ```
 
-12. 
+13. 
 
 ## 02 与远程仓库交互
 
