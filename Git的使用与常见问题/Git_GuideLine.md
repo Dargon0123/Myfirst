@@ -2,7 +2,7 @@
 
 # 00 关于工具的配置
 
-## 01 Git 与 GitHub的配置（Ubuntu）
+## 0.1 Git 与 GitHub的配置（Ubuntu）
 
 1. 检查`Git`的安装
 
@@ -37,7 +37,84 @@
 
 6. 以上完成`Git`与`github`的绑定
 
-# 01 本地仓库常用命令
+## 0.2 Git 与 GitHub的配置（win10）
+
+1. 检查`git`的安装
+
+   ```shell
+   $ git
+   usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
+              [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+              [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+              [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+              [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+              <command> [<args>]
+   ```
+
+2. 检查`ssh`的安装
+
+   ```shell
+   $ ssh
+   usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface]
+              [-b bind_address] [-c cipher_spec] [-D [bind_address:]port]
+              [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11]
+              [-i identity_file] [-J [user@]host[:port]] [-L address]
+              [-l login_name] [-m mac_spec] [-O ctl_cmd] [-o option] [-p port]
+              [-Q query_option] [-R address] [-S ctl_path] [-W host:port]
+              [-w local_tun[:remote_tun]] destination [command [argument ...]]
+   ```
+
+3. 利用`ssh`生成秘钥
+
+   ```shell
+   $ ssh-keygen -t rsa
+   Generating public/private rsa key pair.
+   Enter file in which to save the key (/c/Users/dar/.ssh/id_rsa):
+   Created directory '/c/Users/dar/.ssh'.
+   Enter passphrase (empty for no passphrase):
+   Enter same passphrase again:
+   Your identification has been saved in /c/Users/dar/.ssh/id_rsa
+   Your public key has been saved in /c/Users/dar/.ssh/id_rsa.pub
+   The key fingerprint is:
+   SHA256:X4yp5F4DUjmUAE91iZF8ELplb2GxLvRVgmkzF0i7jBM dar@LAPTOP-OR0DR9JU
+   The key's randomart image is:
+   +---[RSA 3072]----+
+   |    ..o+*O+=o..  |
+   |     o o=oX+.o   |
+   |      o Eo=+.    |
+   |       * X B     |
+   |      o S X o    |
+   |       + B .     |
+   |        o +      |
+   |       . . .     |
+   |        .        |
+   +----[SHA256]-----+
+   ```
+
+4. 在`github`网页上进行配置
+
+   ```shell
+   
+   dar@LAPTOP-OR0DR9JU MINGW64 ~/Desktop
+   $ ssh -T git@github.com
+   ssh: connect to host github.com port 22: Connection refused
+   
+   
+   dar@LAPTOP-OR0DR9JU MINGW64 ~/Desktop
+   $ ssh -T git@github.com
+   The authenticity of host 'github.com (140.82.114.4)' can't be established.
+   ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+   This key is not known by any other names
+   Are you sure you want to continue connecting (yes/no/[fingerprint])?
+   ```
+
+   
+
+
+
+# 01 常用命令
+
+## 1.1 本地仓库
 
 1. ```shell
    git init 
@@ -120,7 +197,7 @@
 
 13. 
 
-## 02 与远程仓库交互
+## 1.2 与远程仓库交互
 
 1. ```shell
    git push origin master
@@ -158,7 +235,7 @@
    # 直接删除远程仓库中该分支
    ```
 
-## 03 合并`Github`上的两个分支
+## 1.3 合并`Github`上的两个分支
 
 1. 一般地，在本地进行`git clone`命令时候，默认是`clone`到的远程仓库的`master `分支，合并分支的时候就需要另一个分支，如何在当地拉取另一个分支的内容
 
