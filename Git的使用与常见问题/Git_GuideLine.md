@@ -191,7 +191,7 @@
 11. [Git 基础 - 打标签](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
     
 11. ```shell
-    gitk --all &
+    git --all &
     # 查看当前的仓库的关系
     ```
 
@@ -219,11 +219,14 @@
 4. 本地有仓库，先初始化，再**关联远程仓库**， `origin`是默认的远程仓库的名字 ，开发，提交，最终push
 
    ```shell
+   # 第一步先关联
    git remote add origin [仓库地址]
    # 关联远程仓库，同步本地与远程的信息
    
+   # 第二步直接同步远程仓库的代码到本地
    git pull origin master
-   # 同步两个仓库的代码
+   
+   # 后面在进行add commit 提交本地代码到仓库中
    ```
 
 5. 更新/删除仓库中的文件，先将远程仓库拉过来，然后本地删除相应的文件，后面紧接着`add, commit，push`结束操作。 
