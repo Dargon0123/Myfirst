@@ -1,6 +1,6 @@
 [TOC]
 
-# 00 关于工具的配置
+# 🍐0  关于工具的配置
 
 ## 0.1 Git 与 GitHub的配置（Ubuntu）
 
@@ -112,33 +112,43 @@
 
 
 
-# 01 常用命令
+# 🍋1 常用命令
 
 ## 1.1 本地仓库
 
-1. ```shell
+1. 初始化
+   
+   ```shell
    git init 
    # 本地初始化一个文件夹，为gii仓库，初始化完成之后，文件夹中会多出.git 文件
    ```
-
-2. ```shell
+   
+2. 查看仓库状态，常用操作
+   
+   ```shell
    git status
    # 显示仓库的状态信息，查看仓库的状态
    ```
-
-3. ```shell
+   
+3. 添加新开发文件
+   
+   ```shell
    git add
    # 将本地仓库的新开发的文件，通过add 命令添加搭到，[仓库缓冲区]的地方，此时还未提交到仓库，等待commit
    git add . 
    # 针对该本地仓库中，多个新开发的文件，进行一次性添加到 缓冲区
    ```
-
-4. ```shell
+   
+4. 提交到仓库
+   
+   ```shell
    git commit -m "text message"
    # 正式将[仓库缓冲区]的文件，提交到该本地仓库,等待push 到远端仓库，即是github 上面
    ```
-
-5. ```shell
+   
+5. 输出`git`日志信息
+   
+   ```shell
    git log
    # 打印出 仓库的提交日志，是一个完整的提交记录，包括 author date and commit message
    
@@ -148,8 +158,10 @@
    git log --oneline
    # 打印上次一条 commit message
    ```
-
-6. ```shell
+   
+6. 查看分支
+   
+   ```shell
    git branch
    # 查看当前仓库的分支，*master 意味着当前所在的分支
    
@@ -162,26 +174,34 @@
    git checkout -b b
    # 新建分支 b 并且切换到分支b 
    ```
-
-7. ```shell
+   
+7. 切换分支
+   
+   ```shell
    git checkout [分支名]
    # git checkout a ; 切换到分支a
    # git checkout master ; 切换到分支master
    ```
-
-8. ```shell
+   
+8. 合并
+   
+   ```shell
    git merge [分支名]
    # 将分支切换到 master
    # git merge a ; 合并a 分支到master
    # note: 合并的两个分支内容不能有冲突，否则合并不成功
    ```
-
-9. ```shell
+   
+9. 删除分支
+   
+   ```shell
    git branch -d [分支名]
    # 删除该分支
    ```
-
-10. ```shell
+   
+10. 打标签
+    
+    ```shell
     git tag [标签名]
     # git tag v1.0 ; 给当前分支 add 标签名
     # 方便查找 git checkout v1.0 就相当于 git checkout [该分支]
@@ -190,25 +210,31 @@
     
 11. [Git 基础 - 打标签](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
     
-11. ```shell
+11. 查看关系（暂时没有用过这个）
+    
+    ```shell
     git --all &
     # 查看当前的仓库的关系
     ```
-
+    
 13. 
 
 ## 1.2 与远程仓库交互
 
-1. ```shell
+1. 推代码到云端仓库
+   
+   ```shell
    git push origin master
    # 将本地代码仓库推到远程仓库，保持两者同步
    ```
-
-2. ```shell
+   
+2. 拉代码从云端仓库
+   
+   ```shell
    git pull origin master
    # 将远程仓库代码拉到本地，保持同步
    ```
-
+   
 3. 在本地没有仓库，先在clone出一个仓库，下面就是在本地仓库上进行的开发，然后add，commit，最终push到远程仓库上面
 
    ```shell
@@ -294,9 +320,9 @@
 
 
 
-# 02 关于Git工具的使用
+# 🍑2 关于Git工具的使用
 
-
+* 常用
 
 ```shell
 These are common Git commands used in various situations:
@@ -335,3 +361,124 @@ collaborate (see also: git help workflows)
    push              Update remote refs along with associated objects
 
 ```
+
+* `Branch ` 操作
+
+早建分支，多用分支！
+
+创建再多的分支也不会造成储存或内存上的开销，并且按逻辑分解工作到不同的分支，要比维护那些特别臃肿的分支简单多了。
+
+```shell
+git branch newBranch
+# 建立新分支
+```
+
+```shell
+git checkout newBranch; 
+# 切换到新分支
+```
+
+```shell
+git checkout -b newBranch
+# 创建一个分支，并且切换过去
+```
+
+* `merge` 合并操作
+
+```shell
+git merge bugFix
+# 在当前 main 分支下，把bugFix合并到main里面，出现一个新的节点，同时包含两个 parent 节点
+# 后续，再将 main 分支合并到 bugFix里面
+```
+
+```shell
+git checkout bugFix; git merge main;
+# 这样每一个分支都包含了代码库的所有修改
+```
+
+* `rebase` 合并操作
+
+```shell
+git rebase main
+# 注意，在当前bugFix分支下，执行之后，将bugFix分支的工作，rebase到main分支上
+# 但是 main还没有更新
+
+git checkout main; git rebase bugFix;
+# 切换分支到main上，然后rebase即可
+```
+
+
+
+* `HEAD` 分离说明
+
+```shell
+git checkout main^
+# 返回 [HEAD]，其中一个 ^ 表示返回上一级别, ~3表示返回上三层
+# ^ 向上增加，只能用 分支名 + ^ ,不能使用 C3^这类提交名字作为操作
+```
+
+```shell
+git branch -f main HEAD~3
+# 将main 分支，强制指向 HEAD 的第三级 parent提交，只允许在 [HEAD]的节点基础上进行移动操作。
+```
+
+* 撤销变更
+
+```shell
+git reset HEAD~1
+# 通过把分支记录回退 1 个提交记录来实现撤销改动。该指令向上移动一个分支，原来指向的提交记录就跟从来没有提交过一样，称之为"改写历史"，使得本地代码根本不知道有这回事。
+# 仅在自己的本地有效
+c0 <-- c1 <-- c2[HEAD]
+|
+c0 <-- c1[HEAD]
+```
+
+```shell
+git revert HEAD
+# 也是变更，可以共享，
+c0 <-- c1 <-- c2[HEAD]
+|
+c0 <-- c1 <-- c2 <-- c2'[HEAD]
+# 其中 c2'是和c1的状态是同样的，把撤销c2 操作当作是一次提交。
+```
+
+##  移动提交记录
+
+前面学习了 `Git`的基础知识 -- 提交、分支以及在提交树上移动。这些概念涵盖了`90%`的功能，同样也足够满足开发者的日常需求。
+
+下面来学习这 `10%`的操作 ，去处理复杂的工作流。
+
+* `git cherry-pick Ci` 整理提交记录
+
+讨论整理提交记录，开发人员有时会说，
+
+> "我想要把这个提交放到这里，那个提交放到刚才那个提交的后面。"
+
+```shell
+git cherry-pick C2 C4
+# 可以将 其它分支上的 不连续 C2 C4，复制（抓过来）放到当前的分支下了。
+# 前提是，当你知道自己所需要的提交记录（如C2，C4，或者知道这些提交记录的哈希值）
+# 非常值得推荐使用 cherr-pick命令
+```
+
+假如不知道自己所需要的提交记录，使用交互式的`rebase`来解决
+
+```shell
+git rebase -i HEAD~4
+# -i --> interactive? 会相应调出一个交互界面，选出自己需要提交即可
+```
+
+
+
+```shell
+git rebase -i # 排序到最前
+git commit --amend # 进行修改
+git rebase -i # 调回原来顺序
+# 把main修改到最前端
+
+```
+
+
+
+
+
