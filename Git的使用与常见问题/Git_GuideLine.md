@@ -322,7 +322,7 @@
 
 # 🍑2 关于Git工具的使用
 
-* 常用
+## 常用
 
 ```shell
 These are common Git commands used in various situations:
@@ -407,6 +407,12 @@ git checkout main; git rebase bugFix;
 # 切换分支到main上，然后rebase即可
 ```
 
+```shell
+git rebase mian bugFix
+# 当前分支在 main*， 合并 bugFix 分支到 main 分支里面
+# 可以直接 使用两个分支名字进行合并操作
+```
+
 
 
 * `HEAD` 分离说明
@@ -468,17 +474,513 @@ git rebase -i HEAD~4
 # -i --> interactive? 会相应调出一个交互界面，选出自己需要提交即可
 ```
 
-
+* 提交的技巧`1`：使用`git rebase -i HEAD~[n]`
 
 ```shell
-git rebase -i # 排序到最前
-git commit --amend # 进行修改
-git rebase -i # 调回原来顺序
+git rebase -i HEAD~2 
+# 排序到最前
+
+git commit --amend 
+# 进行修改提交
+
+git rebase -i HEAD~2 
+# 调回原来顺序
+
+git branch -f main HEAD
 # 把main修改到最前端
 
+```
+
+* 提交的技巧`2`：使用`git cherry-pick`
+
+由于在技巧`1`中的操作，使用`rebase -i`需要对提交记录进行两次重新排序，可能造成由`rebase`而导致的冲突，所以，还是需要学习`cherry-pick`操作来看看。
+
+心里牢记 `cherry-pick` 可以将提交树上的任何地方的提交记录，取过来追加到`HEAD`上（只要不是`HEAD`上游的提交就没问题）
+
+```shell
+git cherry-pick C2
+# 注意，不能抓取当前分支 上游的提交记录
+```
+
+* `git tag`操作
+
+他们可以（在某种程度上 -- 因为标签可以被删除后，重新在另外一个位置创建同名的标签）永久地将某个特定的提交命名为里程碑，然后就可以像分支一样引用了。
+
+且会随着新的提交而移动。你也不能切换到某个标签上面进行修改提交，它就像是提交树上的一个锚点，标识某个特定的位置。
+
+```shell
+git tag v1 C1
+# 将这个标签 v1，明确指向提交C1。如果不指定位置，默认是选择当前HEAD所指向的位置
+```
+
+* `git describe`操作
+
+由于`tag`在代码库中起着[锚点]的作用，`Git`专门为此设计了一个命令用来**描述离你最近**的锚点（也就是标签）。
+
+`git describe`能帮你在提交历史中，移动了多次以后找到方向。
+
+语法：
+
+```shell
+git describe <ref>
+# <ref>可以是任何能被 git 识别成提交记录的引用，若没有指定的话，Git会使用你目前所在的位置[HEAD]。
+
+# 输出的结果
+<tag>_<numCommits>_g<hash>
+# <tag> 是离<ref> 最近的标签，<numCommits> 是<ref> 与 <tag> 相差有多少个提交记录，<hash> 表示 <ref> 的提交记录哈希值的前几位。
+
+# 当 <ref> 提交记录上有某个标签是，则之输出标签名称。
+
+```
+
+## 高级话题
+
+* 多分支 `rebase` 
+
+```shell
+# 同上操作
+
+git rebase main bugFix
+# 当前分支在 main*， 合并 bugFix 分支到 main 分支里面
+# 可以直接 使用两个分支名字进行合并操作
+```
+
+* 使用操作数`~`和`^`，来选择 `parent` 提交记录
+
+`~[nums]` 表示向上追`nums`个提交记录；
+
+`^[nums]` 则是改变这一默认向上追踪的路径。
+
+```shell
+git checkout main^
+# 正常使用方法，默认(合并提交的第一个 parent)在main 这条线上追
+
+git checkout main^2
+# ^ + [nums] 可以改变上述默认追溯行为
+# 可以合并前的分支上移动，加上 ^2 ，则改变这一默认追踪线路
+```
+
+```shell
+git checkout HEAD~
+# 向上移动一个
+git checkout HEAD^2
+# 改变到 分支追溯
+git checkout HEAD~2
+# 连续追溯
+
+git checkout HEAD~^2~2
+```
+
+答案
+
+```shell
+git branch bufWork main^^2^
+# main*, 直接使用 ^ 向上走一个，^2 切换到其它分支，^ 在向上索引一个
+# git branch 直接建立新分支
+```
+
+* 纠缠不清的分支操作
+
+把`main`分支上的最近几次提交做不同的调整后，分别添加到各个的分支上。
+
+1. `one`需要重新排序并删除 `c5` ，
+
+2. `two`仅需要重新排序
+
+3. `three`需要提交一次。
+
+```shell
+git checkout one;
+git cherry-pick c4 c3 c2;
+# 处理 one 分支，直接使用cherry-pick进行抓取
+
+git checkout two;
+git cherry-pick c5 c4 c3 c2;
+# 处理 two 分支，直接使用cherry-pick进行抓取
+
+git branch -f three c2
+# 直接移动到 c2 即可
+```
+
+## `Git`远程仓库
+
+他们实际上只是你的仓库在另外一台计算机上的拷贝，你可以通过因特网与这台计算机通信 -- 也就是增加或是获取提交记录
+
+远程仓库的特性：
+
+1. 远程仓库是一个强大的备份；
+2. 远程让代码更加社交化。
+
+下面根据概念熟悉远程仓库的操作
+
+* 远程分支
+
+```shell
+git checkout o/main; git commit;
+# 切换到远程分支 自动进入分离 HEAD 状态
+# 当添加新的提交是 o/main 也不会更新，这是因为
+# o/main 只有在远程仓库中相应的分支更新了以后才会更新
+```
+
+* 抓取获取
+
+```shell
+git fetch
+# 会做的2件事
+# 从远程仓库中下载本地仓库中缺失的提交记录
+# 更新远程分支指针，如 o/main
+
+# 不会做的事
+# 并不改变你本地仓库的状态
+# 不更新你的本地 main 分支，更不会修改你磁盘上的文件
+
+```
+
+理解上面这几点很重要，执行`git fetch`之后，不是本地仓库就与远程仓库同步了。
+
+其只是单纯的下载操作而已。
+
+* `git pull`同步远程仓库的操作
+
+由于先抓取数据`git fetch`，再重新合并到本地分支这个流程很常用，因此`Git`专门提供 `git pull`命令来完成如下两个同等的操作
+
+```shell
+git fetch;
+# main* 分支上，一个单纯的下载操作
+# 将o/main 分支与远程仓库的分支保持同样
+
+git merge o/main;
+# 将 o/main 分支与本地 main 分支进行合并
+# merge 操作本身会出现一个新节点，包含两个分支的parent
+```
+
+```shell
+git pull
+# 就是完成上述两个命令的操作
+```
+
+* `git fakeTeamwork`模拟队友在远程仓库上的操作
+
+```shell
+git clone
+# 克隆仓库
+
+git fakeTeamwork main 2
+# 在刚创建的远程仓库模拟一些操作: 假装在远程仓库上提交了2次
+
+git commit
+# 在自己的本地分支做一些提交
+
+git pull <==> git fetch + git merge
+# 再拉取远程仓库的变更
+```
+
+* `git push`提交代码到远程仓库上
+
+```shell
+git push
+# 将本地代码push 到远端仓库上
+# 本地分支main 和o/main 也是同步
+```
+
+* 偏离的细节
+
+工作中最常见的问题（面试中好像被问到过）
+
+>假设你周一`git clone` 一个仓库，然后开始研发某个新功能。到周五时，你的新功能开发测试完毕，可以发布了。
+>
+>但是，你的同事这周写了一堆代码，更改了许多你的功能中使用的`API`，使得你的新开发的功能变得不可用。并且你的同事已经`push`到远程仓库了。
+>
+>导致，你的工作就变成了基于**旧版**项目的代码了，与远程仓库最新的代码不匹配了。
+
+这种情况下执行`git push`，出现未知操作了，是直接让远程仓库回到星期一那天的状态码？还是直接在新代码的基础上添加你的代码？还是直接忽略你的提交？
+
+`Git`会要求你，先`git pull`同步远程仓库的代码，再推送你的代码。
+
+```shell
+git fetch;
+# 更新本地仓库的 o/main 分支
+
+git rebase o/main;
+# main* 将本地main分支的提交，移动到最新的 o/main分支下
+# rebase是将当前分支，合并到 目标分支上
+# 而 merge 是将目标分支，合并到 当前分支上来
+
+git push;
+# 两者同步后，合并到远端仓库
+```
+
+同样也可以使用`git merge`进行合并操作
+
+```shell
+git fetch;
+# 更新本地仓库的 o/main 分支
+
+git merge o/main;
+# main* 合并新变更到本地分支main上来
+
+git push;
+# 两者同步后，合并到远端仓库
+```
+
+简写命令
+
+```shell
+git pull --rebase <==> git fetch + git rebase
+```
+
+🥲个人感觉，还是把最新的代码拉过来，将自己的提交保证到远程的最新基础上（但是这个时候，会出现新更新的库代码，影响了自己新功能的使用啊，我认为这一点没有解决），最后，`git push`到远端即可。
+
+* 锁定的`main`原则
+
+```shell
+git branch feature
+git checkout feature
+# main* 本地建立新分支，并且切换到该分支
+
+git push
+# 新分支推到仓库上
+
+git checkout main;
+git reset HEAD~1;
+# 切换到main 分支，且后退一步操作,和远程仓库的main 保持一致
+
+git checkout feature 
+# 完成操作
+```
+
+
+
+## `Git`远程高级仓库
+
+* `git rebase`合并特性分支
+
+在大型项目中开发人员通常会在（从`main`上分出来的）特性分支上工作，工作完成后只做一次集成。
+
+但是有些开发人员只在`main`上做`push，pull`，这样的话，`main`总是最新的，始终与远程分支`(o/main)`保持一致。
+
+对于接下来的工作流，我们集成了两个步骤：
+
+1.  将特性分支集成到`main`上
+2. 推送并更新远程分支。
+
+```shell
+git pull --rebase <==> git fetch + git rebase;
+git push
+# 从远程仓库pull下来，然后将自己的分支合并rebase到远程分支o/main上
+# 推送到远程仓库
+```
+
+```shell
+
+# Task！
+
+git pull --rebase
+# 拉去远程新的分支，更新本地的o/main分支
+
+# BOSS 3个特性分支 -- side1，side2，side3
+git checkout side1;
+git rebase main;
+git checkout main;
+git rebase side1;
+# 将side1合并到 main分支，并更新main
+
+git checkout side2;
+git rebase main;
+git checkout main;
+git rebase side2;
+# 将side2合并到 main分支，并更新main
+
+git checkout side3;
+git rebase main;
+git checkout main;
+git rebase side3;
+# 将side3合并到 main分支，并更新main
+
+git push
+# 按顺序推送到远程仓库
+# 远程仓库被更新过来，需要把那些工作合并过来
+```
+
+简洁办命令操作
+
+```shell
+git fetch;
+# 仅从远程仓库下载到本地
+
+git rebase o/main side1;
+# 将side1合并到 o/main分支上，切换到side1*分支
+
+git rebase side1 side2;
+# 将side2合并到 side1 分支上，切换到side2*分支
+
+git rebase side2 side3;
+# 将side3合并到 side2 分支上，切换到side3*分支
+
+git rebase side3 main;
+# 将main 分支合并到 side3，只是快速前进操作
+# 切换到 main*
+
+git push;
+# 推到远程仓库上
+```
+
+
+
+* `git merge`合并特性分支
+
+一些开饭人员喜欢保留提交历史，因此更爱`merge`操作，而其他人员更喜欢干净的提交树，于是更偏爱`rebase`。
+
+仁者见仁，智者见智。
+
+使用
+
+```shell
+# 使用 git merger 完成Task
+git fetch;
+# 进行下载操作
+
+git merge o/main;
+# main*，将o/main合并过来
+
+git merge side1, side2, side3;
+# main*，依次将side1，2，3合并到main分支上
+
+git push;
+# 推送到远端代码
+```
+
+* 远程跟踪分支
+
+不一定使用`main`分支追踪`o/main`分支了，可以设置某一分支追踪`o/main`分支了
+
+```shell
+# 1
+git checkout -b foo o/main;
+git pull;
+# 创建一个新分支foo，并切换过去
+
+git checkout -b foo o/main;
+git commit;
+git push;
+# 创建一个新分支foo，并切换过去
+
+# 2
+git branch -u o/main foo;
+# foo 分支就会追踪 o/main了
+```
+
+* `git push`的参数
+
+在`git push`中，`Git`是通过当前所在分支的属性来确定远程仓库以及要`push`的目的地，这是未指定参数时的行为，我们可以为`push`指定参数。
+
+```shell
+# 语法
+git push <remote> <place>
+# <remote>: 远端仓库名
+# <place>: 分支名
+
+# 翻译过来
+git push origin main
+# 意思：切换到本地仓库的 main 分支，获取所有的提交，
+# 再到远程仓库 origin 中找到 main 分支，将远程仓库中没有的提交记录都添加上去，搞定之后告诉我
+```
+
+```shell
+# Task
+# 可以将代码 push 到不同的分支上去
+```
+
+ `place`参数的来源和去向不一致的情况：比如想把本地的`foo`分支推送到远程仓库的`bar` 分支。
+
+使用`:` 将两个地址连起来就可以了。
+
+```shell
+git push origin <source>:<destination>
+
+git push origin foo^:main
+# foo^ 表示foo当前的上一个提交点，push到远端仓库的 main 分支上
+```
+
+😎重点：如果你要推送到的目的分支不存在会怎么样？`Git`会在远程仓库中帮你创建这个分支！
+
+```shell
+git push origin main:newBranch;
+```
+
+* `git fetch`参数
+
+仅仅是和`git push`的方向相反而已，`push`是上传，`fetch`是下载到本地。
+
+```shell
+git fetch origin foo;
+# Git 会到远程仓库的 foo 分支上，获取所有本地不存在的提交，放到本地的 o/foo 上。
+# 只下载了远程仓库中 foo 分支中的最新提交记录，并更新了本地的 o/foo
+
+git fetch origin foo~1:bar
+# 注意和push main^不同的是，这里是foo~1，来进行向上的移动操作
+```
+
+* 奇怪用法
+
+在使用`git push/fetch origin :side`不去添加`<source>`选项。
+
+提供另一种删除的方法
+
+```shell
+git push origin :foo;
+# 若 push 的<source>为空，则会删除远程分支上foo
+
+git fetch origin :foo
+# 若 fetch 的<source>为空，则会建立一个foo分支到本地
+```
+
+* `git pull`的参数
+
+`git pull <==> git fetch + git merge`同等的操作。
+
+```shell
+git pull origin main
+# git fetch; bar*，将main分支下载到o/main 上
+# git merge o/main; 合并 o/main 到当前分支 bar* 上面
+```
+
+当然，也支持`<source>:<destination>`的操作
+
+```shell
+git pull origin main:foo
+# 从远处仓库 main 下载分支到本地分支 foo 上
+# 再 merge 到我们当前所在的分支 bar* 上
 ```
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 问题
+
+1. 如何新建一个分支？本地新建一个分支，能否推送到远端仓库上面？还是先在远端创建一个分支，本地的分支可以提交代码到远端新分支里面。
