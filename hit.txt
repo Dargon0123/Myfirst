@@ -1,2 +1,0 @@
-Ready to use the Git tools.
-Test merge branch
