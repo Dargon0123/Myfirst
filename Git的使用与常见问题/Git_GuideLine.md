@@ -642,7 +642,7 @@ git fetch
 
 * `git pull`同步远程仓库的操作
 
-由于先抓取数据`git fetch`，再重新合并到本地分支这个流程很常用，因此`Git`专门提供 `git pull`命令来完成如下两个同等的操作
+由于先抓取数据`git fetch`，再重新合并到本地分支这个流程很常用，因此`Git`专门提供 `git pull`一条命令来完成如下两个命令的操作
 
 ```shell
 git fetch;
