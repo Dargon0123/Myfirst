@@ -320,9 +320,9 @@
 
 
 
-# 🍑2 关于Git工具的使用
+# 🍑2 `Git`本地使用
 
-## 常用
+## 2.0 常用`90%`的操作
 
 ```shell
 These are common Git commands used in various situations:
@@ -362,7 +362,7 @@ collaborate (see also: git help workflows)
 
 ```
 
-* `Branch ` 操作
+## 2.1`Branch ` 操作
 
 早建分支，多用分支！
 
@@ -383,7 +383,7 @@ git checkout -b newBranch
 # 创建一个分支，并且切换过去
 ```
 
-* `merge` 合并操作
+## 2.2`merge` 合并操作
 
 ```shell
 git merge bugFix
@@ -396,7 +396,7 @@ git checkout bugFix; git merge main;
 # 这样每一个分支都包含了代码库的所有修改
 ```
 
-* `rebase` 合并操作
+## 2.3 `rebase` 合并操作
 
 ```shell
 git rebase main
@@ -415,7 +415,7 @@ git rebase mian bugFix
 
 
 
-* `HEAD` 分离说明
+## 2.4 `HEAD` 分离说明
 
 ```shell
 git checkout main^
@@ -428,12 +428,13 @@ git branch -f main HEAD~3
 # 将main 分支，强制指向 HEAD 的第三级 parent提交，只允许在 [HEAD]的节点基础上进行移动操作。
 ```
 
-* 撤销变更
+## 2.5  `reset/revert`撤销提交
 
 ```shell
 git reset HEAD~1
 # 通过把分支记录回退 1 个提交记录来实现撤销改动。该指令向上移动一个分支，原来指向的提交记录就跟从来没有提交过一样，称之为"改写历史"，使得本地代码根本不知道有这回事。
 # 仅在自己的本地有效
+# Vscode的git插件，支持本地进行直接的撤销操作
 c0 <-- c1 <-- c2[HEAD]
 |
 c0 <-- c1[HEAD]
@@ -448,13 +449,13 @@ c0 <-- c1 <-- c2 <-- c2'[HEAD]
 # 其中 c2'是和c1的状态是同样的，把撤销c2 操作当作是一次提交。
 ```
 
-##  移动提交记录
+#  🥭3 `Git`移动使用
 
 前面学习了 `Git`的基础知识 -- 提交、分支以及在提交树上移动。这些概念涵盖了`90%`的功能，同样也足够满足开发者的日常需求。
 
 下面来学习这 `10%`的操作 ，去处理复杂的工作流。
 
-* `git cherry-pick Ci` 整理提交记录
+## 3.1 `git cherry-pick Ci` 整理提交记录
 
 讨论整理提交记录，开发人员有时会说，
 
@@ -502,7 +503,7 @@ git cherry-pick C2
 # 注意，不能抓取当前分支 上游的提交记录
 ```
 
-* `git tag`操作
+## 3.2 `git tag`操作
 
 他们可以（在某种程度上 -- 因为标签可以被删除后，重新在另外一个位置创建同名的标签）永久地将某个特定的提交命名为里程碑，然后就可以像分支一样引用了。
 
@@ -513,7 +514,7 @@ git tag v1 C1
 # 将这个标签 v1，明确指向提交C1。如果不指定位置，默认是选择当前HEAD所指向的位置
 ```
 
-* `git describe`操作
+## 3.3 `git describe`操作
 
 由于`tag`在代码库中起着[锚点]的作用，`Git`专门为此设计了一个命令用来**描述离你最近**的锚点（也就是标签）。
 
@@ -533,9 +534,9 @@ git describe <ref>
 
 ```
 
-## 高级话题
+# 🍏4 `Git`高级话题
 
-* 多分支 `rebase` 
+## 4.1 多分支 `rebase` 
 
 ```shell
 # 同上操作
@@ -579,7 +580,7 @@ git branch bufWork main^^2^
 # git branch 直接建立新分支
 ```
 
-* 纠缠不清的分支操作
+## 4.2  `cherry-pick`纠缠不清的分支操作
 
 把`main`分支上的最近几次提交做不同的调整后，分别添加到各个的分支上。
 
@@ -602,7 +603,7 @@ git branch -f three c2
 # 直接移动到 c2 即可
 ```
 
-## `Git`远程仓库
+# 🍓5 `Git`远程仓库
 
 他们实际上只是你的仓库在另外一台计算机上的拷贝，你可以通过因特网与这台计算机通信 -- 也就是增加或是获取提交记录
 
@@ -640,7 +641,7 @@ git fetch
 
 其只是单纯的下载操作而已。
 
-* `git pull`同步远程仓库的操作
+## 5.1 `git pull`同步远程仓库的操作
 
 由于先抓取数据`git fetch`，再重新合并到本地分支这个流程很常用，因此`Git`专门提供 `git pull`一条命令来完成如下两个命令的操作
 
@@ -683,7 +684,7 @@ git push
 # 本地分支main 和o/main 也是同步
 ```
 
-* 偏离的细节
+## 5.2 `pull --rebase`偏离的细节
 
 工作中最常见的问题（面试中好像被问到过）
 
@@ -749,9 +750,7 @@ git checkout feature
 # 完成操作
 ```
 
-
-
-## `Git`远程高级仓库
+## 5.3 `Git`远程高级仓库
 
 * `git rebase`合并特性分支
 
@@ -870,7 +869,7 @@ git branch -u o/main foo;
 # foo 分支就会追踪 o/main了
 ```
 
-* `git push`的参数
+## 5.4 `git push`的参数
 
 在`git push`中，`Git`是通过当前所在分支的属性来确定远程仓库以及要`push`的目的地，这是未指定参数时的行为，我们可以为`push`指定参数。
 
@@ -902,13 +901,15 @@ git push origin foo^:main
 # foo^ 表示foo当前的上一个提交点，push到远端仓库的 main 分支上
 ```
 
+### 😎新建远程分支的一种方法
+
 😎重点：如果你要推送到的目的分支不存在会怎么样？`Git`会在远程仓库中帮你创建这个分支！
 
 ```shell
 git push origin main:newBranch;
 ```
 
-* `git fetch`参数
+## 5.5 `git fetch`参数
 
 仅仅是和`git push`的方向相反而已，`push`是上传，`fetch`是下载到本地。
 
@@ -921,7 +922,7 @@ git fetch origin foo~1:bar
 # 注意和push main^不同的是，这里是foo~1，来进行向上的移动操作
 ```
 
-* 删除远程分支的一种方式：奇怪用法
+### 😎删除远程分支的一种方式：奇怪用法
 
 ✍️重要：在使用`git push/fetch origin :side`不去添加`<source>`选项。
 
