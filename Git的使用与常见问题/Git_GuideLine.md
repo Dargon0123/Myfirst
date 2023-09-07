@@ -921,9 +921,9 @@ git fetch origin foo~1:bar
 # 注意和push main^不同的是，这里是foo~1，来进行向上的移动操作
 ```
 
-* 奇怪用法
+* 删除远程分支的一种方式：奇怪用法
 
-在使用`git push/fetch origin :side`不去添加`<source>`选项。
+✍️重要：在使用`git push/fetch origin :side`不去添加`<source>`选项。
 
 提供另一种删除的方法
 
