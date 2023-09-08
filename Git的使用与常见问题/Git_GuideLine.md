@@ -322,7 +322,7 @@
 
 # 🍑2 `Git`本地使用
 
-## 2.0 常用`90%`的操作
+## 2.0  常用`90%`的操作
 
 ```shell
 These are common Git commands used in various situations:
@@ -362,7 +362,7 @@ collaborate (see also: git help workflows)
 
 ```
 
-## 2.1`Branch ` 操作
+## 2.1 `Branch ` 操作
 
 早建分支，多用分支！
 
@@ -383,7 +383,7 @@ git checkout -b newBranch
 # 创建一个分支，并且切换过去
 ```
 
-## 2.2`merge` 合并操作
+## 2.2 `merge` 合并操作
 
 ```shell
 git merge bugFix
