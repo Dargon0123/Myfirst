@@ -393,9 +393,10 @@ git ls-remote --heads origin
 # 查看远程仓库的分支名字
 ```
 
-问题点：当该本地分支有改变，增添操作的时候，需要先提交之后，才能切换到别的分支上
+问题描述：当该本地分支有改变，增添等操作的时候，1）需要先提交之后，才能切换到别的分支上；2）暂存本地更改
 
 ```bash
+# way 01
 $ git checkout feature2
 
 error: Your local changes to the following files would be overwritten by checkout:
@@ -403,6 +404,22 @@ error: Your local changes to the following files would be overwritten by checkou
 Please commit your changes or stash them before you switch branches.
 Aborting
 # 需要先提交本地的改变之后，才能 checkout 其它分支
+```
+
+```bash
+# way 02
+$ git stash
+Saved working directory and index state WIP on feature2: 81f4e0e solve merge confliction
+# feature2* 将把更改保存在一个临时存储区中，并将工作目录恢复到干净的状态，
+# 一边切换到其他分支
+
+# 完成其他分支操作后，再切换到分支feature2上
+git checkout feature2;
+git stash apply;
+# 恢复之前的分支
+
+# 或者，在应用暂存的更改后，删除暂存，可以使用
+git stash pop; #(暂且未进行实验)
 ```
 
 
@@ -756,9 +773,9 @@ git pull --rebase <==> git fetch + git rebase
 
 🥲个人感觉，还是把最新的代码拉过来，将自己的提交保证到远程的最新基础上（但是这个时候，会出现新更新的库代码，影响了自己新功能的使用啊，我认为这一点没有解决），最后，`git push`到远端即可。
 
-个人实现一个例子：
+### 例1：添加文件:
 
-1. 首先其它的本地仓库，对分支`origin/feature2`添加一个`test`文件，`comit、push`到远端仓库。
+1. 首先其它的本地仓库，对分支`origin/feature2`添加一个`test`文件，`commit、push`到远端仓库。
 
 2. 然后，在自己本地进行对分支`origin/feature2`在添加一个`test2`文件，`commit`之后，`push`到分支`origin/feature2`会出现错误
 
@@ -811,7 +828,38 @@ git pull --rebase <==> git fetch + git rebase
    # push到远端仓库成功
    ```
 
-   
+
+### 例2：添加内容，修改冲突
+
+* `git push`失败
+
+1. 首先，其它本地仓库的文件，对分支`origin/feature2``test`文件，添加一些自己的代码，`commit、push`到远端仓库。
+2. 然后，自己在不知道前者已经修改了`text`文件后，自己在本地仓库也增添了一些自己的代码。这时候，问题来了，当自己在本地仓库`commit`之后，`push`直接失败
+
+* `git pull`失败
+
+1. 执行`git pull`命令时，发生了合并冲突，`Git`尝试将远程分支的更改合并到本地分支时，发现与本地分支上已有更改相冲突的情况。
+
+2. 需要进入相应的文件里面，解决合并冲突，通常冲突部分如下
+
+   ```bash
+   <<<<<<< HEAD
+   本地分支的更改
+   =======
+   远程分支的更改
+   >>>>>>> 远程/分支名
+   # 编辑文件，将冲突部分解决为你希望的结果
+   # 比如，全部都保留（需要将Git提示删除掉）
+   # 只保留如下内容即可
+   本地分支的更改
+   远程分支的更改
+   ```
+
+3. 保存文件后，使用`git add . ` 和 继续`git commit -m "解决合并冲突"`
+
+4. 之后，可以正常使用`git pull/push`这些指令
+
+
 
 * 锁定的`main`原则
 
