@@ -918,6 +918,13 @@ git push -u origin local_branch:remote_branch
 
 ### 🤔`way02`本地分支关联远程分支：使用`branch`
 
+```bash
+git branch --set-upstream-to=origin/remote-branch local-branch
+# 使用 --set-upstream-to选项，将本地分支与远程分支关联起来
+```
+
+
+
 
 
 ### 😎新建远程分支的一种方法
