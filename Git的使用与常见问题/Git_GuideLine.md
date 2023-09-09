@@ -393,6 +393,18 @@ git ls-remote --heads origin
 # 查看远程仓库的分支名字
 ```
 
+问题点：当该本地分支有改变，增添操作的时候，需要先提交之后，才能切换到别的分支上
+
+```bash
+$ git checkout feature2
+
+error: Your local changes to the following files would be overwritten by checkout:
+        Git的使用与常见问题/Git_GuideLine.md
+Please commit your changes or stash them before you switch branches.
+Aborting
+# 需要先提交本地的改变之后，才能 checkout 其它分支
+```
+
 
 
 ## 2.2 `merge` 合并操作
@@ -743,6 +755,63 @@ git pull --rebase <==> git fetch + git rebase
 ```
 
 🥲个人感觉，还是把最新的代码拉过来，将自己的提交保证到远程的最新基础上（但是这个时候，会出现新更新的库代码，影响了自己新功能的使用啊，我认为这一点没有解决），最后，`git push`到远端即可。
+
+个人实现一个例子：
+
+1. 首先其它的本地仓库，对分支`origin/feature2`添加一个`test`文件，`comit、push`到远端仓库。
+
+2. 然后，在自己本地进行对分支`origin/feature2`在添加一个`test2`文件，`commit`之后，`push`到分支`origin/feature2`会出现错误
+
+   ```bash
+   $ git push origin feature2
+   
+   To github.com:Dargon0123/Myfirst.git
+    ! [rejected]        feature2 -> feature2 (fetch first)
+   error: failed to push some refs to 'github.com:Dargon0123/Myfirst.git'
+   hint: Updates were rejected because the remote contains work that you do
+   hint: not have locally. This is usually caused by another repository pushing
+   hint: to the same ref. You may want to first integrate the remote changes
+   hint: (e.g., 'git pull ...') before pushing again.
+   # 意思是需要你先更新最新的远程仓库到本地
+   # 然后，再基于最新的远程仓库 push 你的代码到远端仓库
+   
+   ```
+
+3. 执行 `git pull --rebase`之后
+
+   ```bash
+   $ git pull --rebase
+   
+   remote: Enumerating objects: 4, done.
+   remote: Counting objects: 100% (4/4), done.
+   remote: Compressing objects: 100% (1/1), done.
+   Unpacking objects: 100% (3/3), 245 bytes | 11.00 KiB/s, done.
+   remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
+   From github.com:Dargon0123/Myfirst
+      2f1a62b..865fb31  feature2   -> origin/feature2
+   Successfully rebased and updated refs/heads/feature2.
+   # feature* 拉取远端仓库代码，到本地
+   # 同时，将本地分支feature2的提交，合并到origin/feature2上
+   ```
+
+4. 重新进行`push`
+
+   ```bash
+   $ git push origin feature2
+   
+   Enumerating objects: 3, done.
+   Counting objects: 100% (3/3), done.
+   Delta compression using up to 20 threads
+   Compressing objects: 100% (2/2), done.
+   Writing objects: 100% (2/2), 233 bytes | 233.00 KiB/s, done.
+   Total 2 (delta 1), reused 0 (delta 0), pack-reused 0
+   remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+   To github.com:Dargon0123/Myfirst.git
+      865fb31..2e527f3  feature2 -> feature2
+   # push到远端仓库成功
+   ```
+
+   
 
 * 锁定的`main`原则
 
