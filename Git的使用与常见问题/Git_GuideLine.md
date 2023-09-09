@@ -362,7 +362,7 @@ collaborate (see also: git help workflows)
 
 ```
 
-## 2.1 `Branch ` 操作
+## 2.1 `branch ` 操作
 
 早建分支，多用分支！
 
@@ -892,14 +892,33 @@ git push origin main
 
  `place`参数的来源和去向不一致的情况：比如想把本地的`foo`分支推送到远程仓库的`bar` 分支。
 
+### 🤔`way01`本地分支关联远程分支：使用`push`
+
 使用`:` 将两个地址连起来就可以了。
 
-```shell
+```bash
 git push origin <source>:<destination>
 
 git push origin foo^:main
 # foo^ 表示foo当前的上一个提交点，push到远端仓库的 main 分支上
+
+
 ```
+
+使用`git push `命令的`-u`选项来推送本地分支，同时关联远程分支。假设在本地有个分支`local_branch`，要将其推送到远程并关联到`remote_branch`，执行以下命令：
+
+```bash
+git push -u origin local_branch:remote_branch
+# 其具体语法和上述类似
+# -u 会自动设置本地分支跟踪远程分支，此后，在该 local_branch 分支上使用
+# git push 和 git pull命令是，Git将知道与哪个远程分支进行交互。
+```
+
+
+
+### 🤔`way02`本地分支关联远程分支：使用`branch`
+
+
 
 ### 😎新建远程分支的一种方法
 
