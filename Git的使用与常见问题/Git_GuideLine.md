@@ -834,7 +834,80 @@ git pull --rebase <==> git fetch + git rebase
 * `git push`失败
 
 1. 首先，其它本地仓库的文件，对分支`origin/feature2``test`文件，添加一些自己的代码，`commit、push`到远端仓库。
+
 2. 然后，自己在不知道前者已经修改了`text`文件后，自己在本地仓库也增添了一些自己的代码。这时候，问题来了，当自己在本地仓库`commit`之后，`push`直接失败
+
+   ```bash
+   $ git push origin feature2
+   To github.com:Dargon0123/Myfirst.git
+    ! [rejected]        feature2 -> feature2 (fetch first)
+   error: failed to push some refs to 'github.com:Dargon0123/Myfirst.git'
+   hint: Updates were rejected because the remote contains work that you do
+   hint: not have locally. This is usually caused by another repository pushing
+   hint: to the same ref. You may want to first integrate the remote changes
+   hint: (e.g., 'git pull ...') before pushing again.
+   hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+   
+   # push 被 reject ，因为你没有基于最新的仓库，进行push代码的，由于其他仓库贡献者也push了代码待该分支，你需要做的应该首先pull新的代码到自己仓库，再进行提交。
+   ```
+
+3. `git pull`拉取最新的代码
+
+   ```bash
+   $ git pull origin feature2
+   
+   remote: Enumerating objects: 5, done.
+   remote: Counting objects: 100% (5/5), done.
+   remote: Compressing objects: 100% (1/1), done.
+   remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
+   Unpacking objects: 100% (3/3), 262 bytes | 10.00 KiB/s, done.
+   From github.com:Dargon0123/Myfirst
+    * branch            feature2   -> FETCH_HEAD
+      81f4e0e..bb96018  feature2   -> origin/feature2
+   Auto-merging Test.txt
+   CONFLICT (content): Merge conflict in Test.txt
+   Automatic merge failed; fix conflicts and then commit the result.
+   
+   # 需要修改相应的冲突
+   ```
+
+   ```bash
+   kkkkzzzz
+   wang menglong test！
+   <<<<<<< HEAD
+   add content test
+   =======
+   eeeeee
+   >>>>>>> bb96018a035b205793644ba809bf0fdd94531f35
+   
+   # 修改之后 （将git的提示慈也清理掉）
+   kkkkzzzz
+   wang menglong test！
+   add content test
+   eeeeee
+   ```
+
+   重新走一遍`add，commit， push`的流程
+
+   ```bash
+   $ git commit -m "fix merge conflict"
+   [feature2 cbb8f7a] fix merge conflict
+   
+   $ git push origin feature2
+   Enumerating objects: 10, done.
+   Counting objects: 100% (10/10), done.
+   Delta compression using up to 20 threads
+   Compressing objects: 100% (5/5), done.
+   Writing objects: 100% (6/6), 594 bytes | 594.00 KiB/s, done.
+   Total 6 (delta 2), reused 0 (delta 0), pack-reused 0
+   remote: Resolving deltas: 100% (2/2), completed with 1 local object.
+   To github.com:Dargon0123/Myfirst.git
+      bb96018..cbb8f7a  feature2 -> feature2
+   
+   # Ok ,解决冲突成功
+   ```
+
+   
 
 * `git pull`失败
 
