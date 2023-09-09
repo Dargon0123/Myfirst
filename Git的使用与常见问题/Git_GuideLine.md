@@ -383,6 +383,18 @@ git checkout -b newBranch
 # 创建一个分支，并且切换过去
 ```
 
+```bash
+git branch -a
+# 查看所有分支，包括本地、远程分支
+```
+
+```bash
+git ls-remote --heads origin
+# 查看远程仓库的分支名字
+```
+
+
+
 ## 2.2 `merge` 合并操作
 
 ```shell
