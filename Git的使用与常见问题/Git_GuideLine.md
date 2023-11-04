@@ -1125,7 +1125,11 @@ git branch --set-upstream-to=origin/remote-branch local-branch
 # 使用 --set-upstream-to选项，将本地分支与远程分支关联起来
 ```
 
+举例本地有分支 `dev`，需要关联到远程分支`origin/dev`。可以先使用`git branch -vv`命令来查看本地分支和仓库分支的对应关系。再使用上述命令，即：
 
+```shell
+git branch --set-upsteam-to=origin/dev dev
+```
 
 
 
@@ -1184,7 +1188,132 @@ git pull origin main:foo
 
 
 
+## 5.6 `git commit --amend`的使用
 
+工作中有两种情况需要用到 `commit --amend`，从其字面意思就可大致了解到，`amend`表示缝合，修正的意思，避免无用提交。
+
+1. 提交（`commit`）过一次代码之后，发现一个地方改错了，现在需要改过来，当再次提交的时候，不想再多一次提交记录，重新叠加到上次的提交记录上；
+2. 上一次提交的 `commit message`的信息描述有误，可以直接使用该命令，修改`message`内容。
+
+✨例子描述
+
+1. 代码补交举例：基于下面的例子`2`的基础，看代码发生改变之后情况
+
+   首先，使用`git log`查看当前提交历史，和最近提交的 `commit ID`
+
+   ```shell
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git log
+   commit 8d1884597fc2590371fc78e21beda930e2ea5612 (HEAD -> master) # 对应的 commit ID
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:11:42 2023 +0800
+   
+       Add `git commit --amend` usage 1
+   
+   commit b23f782bf2cf829848deb31672f4c84fb6225651
+   Merge: 2a2eb7e 10a0c2f
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:05:58 2023 +0800
+   
+       Merge branch 'master' of github.com:Dargon0123/Myfirst
+   
+   ```
+
+   接着，将代码部分进行修改操作
+
+   ```shell
+   # 通过git status查看当前工作区修改状态
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git status
+   On branch master
+   Your branch is ahead of 'origin/master' by 3 commits.
+     (use "git push" to publish your local commits)
+   
+   Changes not staged for commit:
+     (use "git add <file>..." to update what will be committed)
+     (use "git restore <file>..." to discard changes in working directory)
+           modified:   Git的使用与常见问题/Git_GuideLine.md
+   
+   no changes added to commit (use "git add" and/or "git commit -a")
+   ```
+
+   使用`git commit --amend`之后，查看`git log`的操作
+
+   ```shell
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git log
+   commit a3fc580d230c76735dce378c40c3c49e568b5864 (HEAD -> master) # 对应的 commit ID,相当于将上次的 ID overwrite掉了
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:11:42 2023 +0800
+   
+       Add `git commit --amend` usage 2
+   
+   commit b23f782bf2cf829848deb31672f4c84fb6225651
+   Merge: 2a2eb7e 10a0c2f
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:05:58 2023 +0800
+   
+       Merge branch 'master' of github.com:Dargon0123/Myfirst
+   ```
+
+   
+
+2. 修改上次`commit message`，先使用`git log`看下当前的提交记录 
+
+   ```shell
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git log
+   commit acea56c75a02578d6fcc3b8f5d7b2b6ee314c716 (HEAD -> master) # 对应的 commit ID
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:11:42 2023 +0800
+   
+       Add `git commit --amend` usage
+   
+   commit b23f782bf2cf829848deb31672f4c84fb6225651 # 对应的 commit ID
+   Merge: 2a2eb7e 10a0c2f
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:05:58 2023 +0800
+   
+       Merge branch 'master' of github.com:Dargon0123/Myfirst
+   ```
+   
+   接着，使用`git commit --amend`命令
+   
+   ```shell
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git commit --amend
+   [master 8d18845] Add `git commit --amend` usage 1
+    Date: Sat Nov 4 15:11:42 2023 +0800
+    1 file changed, 66 insertions(+)
+    
+   # 重新查看 git log，发现上次更改的 message 信息
+   PS F:\Codefield\Github\MyGitHubProject\Myfirst> git log
+   commit 8d1884597fc2590371fc78e21beda930e2ea5612 (HEAD -> master) # 对应的 commit ID发生了更改
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:11:42 2023 +0800
+   
+       Add `git commit --amend` usage 1
+   
+   commit b23f782bf2cf829848deb31672f4c84fb6225651
+   Merge: 2a2eb7e 10a0c2f
+   Author: Dargon0123 <dargon0123@163.com>
+   Date:   Sat Nov 4 15:05:58 2023 +0800
+   
+       Merge branch 'master' of github.com:Dargon0123/Myfirst
+   ```
+   
+   但是，这个方法，会改变你原来的`commit ID`。
+   
+   之所以不会更改代码，是因为此时，本地修改的代码，没有`add`到暂存区，本地代码相对上次是没有发生改变，所以，仅仅是变更，提交了`commit message`信息。
+
+ ✨小插曲
+
+上面使用的 `git commit --amend`虽然可以实现将本次的更改，重新叠加到上次的提交记录上。但是，这个操作更新了我上次提交的`ID`。
+
+在工作中，你可能在代码评审的时候，需要这个`ID`。比如，你提交一笔代码，结果代码审核没通过，给了你一些修改意见，你基于本地修改后，就需要在同一个 `ID`上来提交，表明解决这个问题，为了使得代码和问题都有追溯性，显然不能将上一个`ID`给覆盖了。
+
+这样，就需要一个这样的 `git commit --amend`命令，即可修改代码，且提交之后，还保留着上次的 `ID` 
+
+直接使用 `git push -f [commit ID]`
+
+工作中使用 `cr push -f [commit ID]`就可以完成上述操作。
+
+😥暂时在 `git`中没有找到相应的操作。
 
 
 
