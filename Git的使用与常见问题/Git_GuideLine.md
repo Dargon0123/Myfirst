@@ -510,7 +510,14 @@ c0 <-- c1 <-- c2 <-- c2'[HEAD]
 
 
 
+## 2.7 `git checkout`高级用法
 
+在工作中一次 `commit`失败之后，需要中心退回操作
+
+1. 首先使用 `git reset --soft HEAD~`来退回上次的 `commit`之前的那个操作
+2. 回退之后，所有的文件在`staged`暂存区，即全是`add .` 之后的状态
+3. 使用`git restore --stage <文件>`以取消暂存，回到`add .` 之前的原始状态
+4. 使用 `git checkout <文件>`来放弃对这个文件的修改
 
 #  🥭3 `Git`移动使用
 
