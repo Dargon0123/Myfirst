@@ -110,7 +110,40 @@
 
    
 
+## 0.2 Git的全局配置
 
+1. 设置默认的文本编辑器 `vim` 
+
+```shell
+git config --global core.editor "vim"
+```
+
+这会将全局的`Git` 配置中的默认编辑器更改为 `vim` 
+
+2. 设置默认配置提交信息模板`git commit message` 
+
+```bash
+# 1 创建提交模板文件，必须是 .xxx 开头的文件
+# 路径不固定，比如 ~ 是桌面开始； / 表示根目录
+ touch ~/.gitmessage
+
+# 2 编辑提交模板文件
+vim ~/.gitmessage
+
+# 类型: <类型>
+# 描述: <描述>
+# 问题编号: <问题编号>
+#
+# 例子：
+# 类型: 修复
+# 描述: 修复了一个关于登录页面的样式问题
+# 问题编号: #123
+
+# 3 配置 Git 使用该提交模板
+git config --global commit.template ~/.gitmessage
+```
+
+这样设置之后，当你每次运行 `git commit` 之后，会自动在提交描述上使用该模板信息，将会按照模板规范填写信息。
 
 # 🍋1 常用命令
 
